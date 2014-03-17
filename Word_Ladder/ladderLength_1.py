@@ -1,19 +1,23 @@
 # Result:
 # 11
 #
-# real 0m1.294s
-# user 0m1.284s
-# sys  0m0.004s
+# real 0m3.593s
+# user 0m3.580s
+# sys  0m0.008s
 
+import string
 class Solution:
     # @param start, a string
     # @param end, a string
     # @param dict, a set of string
     # @return an integer
     def ladderLength(self, start, end, dict):
-	word_len = len(start)
+        word_len = len(start)
         length = 2
         level = {length:[start]}
+        used_words = []
+        #string_abc = "abcdefghijklmnopqrstuvwxyz"
+        string_abc = string.ascii_lowercase[:26]
         while True:
             if level.has_key(length) == False:
                 return 0
@@ -27,19 +31,18 @@ class Solution:
                 if diff_end_times == 1:
                     return length
                 else:
-                    words = dict[:]
-                    for word in words:
-                        diff_times = 0
-                        for i in range(word_len):
-                            if current[i] != word[i]:
-                                diff_times += 1
-                                if diff_times > 1:
-                                    break
-                        if diff_times == 1:
-                            if level.has_key(length + 1) == False:
-                                level[length + 1] = []
-                            level[length + 1].append(word)
-                            dict.remove(word)
+                    for used in used_words:
+                        dict.remove(used)
+                    used_words = []
+                    for i in range(word_len):
+                        for char in string_abc:
+                            if char != current[i]:
+                                word = current[:i] + char + current[i + 1:]
+                                if word in dict:
+                                    if level.has_key(length + 1) == False:
+                                        level[length + 1] = []
+                                    level[length + 1].append(word)
+                                    used_words.append(word)
             length += 1
 start = "sand"
 end = "acne"
